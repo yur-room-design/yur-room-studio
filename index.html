@@ -36,7 +36,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .logo-sub{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.04em}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 1.25rem;font-size:13px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .12s}
 .nav-item:hover{color:var(--text);background:var(--bg)}
-.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-l);font-weight:500}
+.nav-item.active{color:#8B6914;border-left-color:#C4963A;background:#F7EED5;font-weight:500}
 .nav-item i{font-size:16px}
 .sidebar-bottom{padding:1rem 1.25rem;border-top:0.5px solid var(--border);margin-top:auto}
 .u-row{display:flex;align-items:center;gap:8px}
@@ -186,9 +186,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 <div id="app">
   <div class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-text">Yu(r) Room</div>
-      <div class="logo-sub">Design Studio</div>
+    <div class="sidebar-logo" style="padding:1rem 1.25rem 0.875rem;cursor:pointer" onclick="document.getElementById('logo-input').click()" title="點擊更換 Logo">
+      <div id="logo-display" style="margin-bottom:4px">
+        <img id="logo-img" src="" alt="" style="display:none;max-height:36px;max-width:140px;object-fit:contain">
+        <div id="logo-text-fallback">
+          <div class="logo-text">Yu(r) Room</div>
+          <div class="logo-sub">Design Studio</div>
+        </div>
+      </div>
+      <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="uploadLogo(this)">
     </div>
     <nav>
       <div class="nav-item active" onclick="showPage('board',this)"><i class="ti ti-layout-kanban"></i>看板</div>
@@ -418,7 +424,7 @@ function fetchUserInfo(){
     document.getElementById('u-email').textContent=u.email||'';
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    renderBoard(); renderSOP(); renderDB(); renderStats();
+    renderBoard(); renderSOP(); renderDB(); renderStats(); applyLogo(localStorage.getItem('yurroom_logo')||"");
   });
 }
 
@@ -492,18 +498,15 @@ function dropCard(si){if(!dragId)return;const p=projects.find(x=>x.id===dragId);
 function move(id,dir){const p=projects.find(x=>x.id===id);if(!p)return;const old=p.stage;p.stage=Math.max(0,Math.min(7,p.stage+dir));save();renderBoard();renderStats();handleStageChange(p,old,p.stage)}
 
 // ── CALENDAR ──────────────────────────────────────────────
+// calendarCreated 存的是 {key: eventId}
 function maybeAddCalendar(p, field){
-  if(!accessToken){ console.log('日曆：未登入，跳過'); return; }
+  if(!accessToken){ return; }
   const key=`${p.id}_${field}`;
-  if(calendarCreated[key]){ console.log('日曆：已建立過，跳過',key); return; }
-
   const dateMap={deadline:p.deadline, proposal:p.proposal, dep1:p.dep1, dep2:p.dep2, delivery:p.delivery};
   const labelMap={deadline:'期望完成', proposal:'第一次提案', dep1:'第一期款收款', dep2:'第二期款收款', delivery:'實際交稿'};
   const colorMap={deadline:'5', proposal:'7', dep1:'2', dep2:'2', delivery:'1'};
   const dateStr=dateMap[field];
-  if(!dateStr){ console.log('日曆：無日期，跳過',field); return; }
-
-  console.log('日曆：建立事件',p.client,labelMap[field],dateStr);
+  if(!dateStr) return;
 
   const event={
     summary:`${p.client} — ${labelMap[field]}`,
@@ -512,26 +515,40 @@ function maybeAddCalendar(p, field){
     colorId:colorMap[field]||'5',
   };
 
-  fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
-    method:'POST',
-    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-    body:JSON.stringify(event),
-  }).then(r=>r.json()).then(ev=>{
-    if(ev.id){
-      calendarCreated[key]=true;
-      localStorage.setItem('yurroom_cal',JSON.stringify(calendarCreated));
-      console.log('日曆：成功建立',ev.summary,ev.htmlLink);
-    } else {
-      console.log('日曆：建立失敗',ev);
-    }
-  }).catch(e=>console.log('日曆錯誤：',e));
+  const existingEventId=calendarCreated[key];
+
+  if(existingEventId){
+    // 已存在 → PATCH 更新日期
+    fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${existingEventId}`,{
+      method:'PATCH',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+      body:JSON.stringify({start:{date:dateStr},end:{date:dateStr},summary:event.summary}),
+    }).then(r=>r.json()).then(ev=>{
+      if(ev.id) console.log('日曆：已更新',ev.summary,dateStr);
+      else { console.log('日曆：更新失敗，重新建立',ev); delete calendarCreated[key]; maybeAddCalendar(p,field); }
+    });
+  } else {
+    // 不存在 → POST 新建
+    fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+      method:'POST',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+      body:JSON.stringify(event),
+    }).then(r=>r.json()).then(ev=>{
+      if(ev.id){
+        calendarCreated[key]=ev.id;
+        localStorage.setItem('yurroom_cal',JSON.stringify(calendarCreated));
+        console.log('日曆：已建立',ev.summary,dateStr);
+      } else {
+        console.log('日曆：建立失敗',ev);
+      }
+    }).catch(e=>console.log('日曆錯誤：',e));
+  }
 }
 
-// 清除日曆快取（讓所有日期重新觸發）
 function clearCalCache(){
   calendarCreated={};
   localStorage.removeItem('yurroom_cal');
-  alert('日曆快取已清除！下次儲存案件時，有日期的欄位都會重新同步到日曆。');
+  alert('日曆快取已清除！');
 }
 
 // ── MODAL ─────────────────────────────────────────────────
