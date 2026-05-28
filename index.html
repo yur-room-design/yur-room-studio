@@ -255,9 +255,28 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
     <!-- 財務 -->
     <div class="page" id="page-finance">
-      <div class="page-header"><div class="page-title">財務總覽</div></div>
+      <div class="page-header">
+        <div class="page-title">財務總覽</div>
+        <button class="btn" onclick="loadFinance()"><i class="ti ti-refresh"></i> 更新資料</button>
+      </div>
       <div class="stats" id="stats"></div>
-      <p style="font-size:12px;color:var(--text-muted)">詳細收支紀錄請前往 <a href="https://docs.google.com/spreadsheets" target="_blank" style="color:var(--accent)">Google Sheets</a> 查看。</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem">
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">服務分類</div>
+          <div id="cat-breakdown"></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">月份收款</div>
+          <div id="monthly-breakdown"></div>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase">收款紀錄</div>
+          <a href="https://docs.google.com/spreadsheets/d/1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0/edit" target="_blank" class="btn sm"><i class="ti ti-external-link"></i> 開啟 Sheets</a>
+        </div>
+        <div id="payment-list"></div>
+      </div>
     </div>
   </main>
 </div>
@@ -314,6 +333,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 // ── CONFIG ──────────────────────────────────────────────
 const CLIENT_ID = '285105995019-oaipob21hn261fno7ks1tbtv3d5tmi2u.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar.events profile email';
+const SHEET_ID = '1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0';
 
 const STAGES = ['詢問中','報價寄出','訂金到帳','設計中','提案','修改中','完稿','結案'];
 const CAT_MAP = {brand:'品牌識別',pack:'包裝設計',graphic:'視覺與平面',social:'社群視覺',digital:'數位與動態',other:'其他'};
@@ -553,16 +573,155 @@ function toggleSOP(i){
   c.style.transform=b.classList.contains('open')?'rotate(180deg)':'';
 }
 
-// ── STATS ─────────────────────────────────────────────────
+// ── STATS（從看板資料算）────────────────────────────────────
 function renderStats(){
   const active=projects.filter(p=>p.stage<7).length;
   const total=projects.reduce((s,p)=>s+(Number(p.amount)||0),0);
   const done=projects.filter(p=>p.stage===7).length;
   document.getElementById('stats').innerHTML=`
     <div class="stat-card"><div class="stat-label">進行中案件</div><div class="stat-value green">${active}</div></div>
-    <div class="stat-card"><div class="stat-label">總接案金額</div><div class="stat-value">$${total.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">看板總金額</div><div class="stat-value">$${total.toLocaleString()}</div></div>
     <div class="stat-card"><div class="stat-label">已結案</div><div class="stat-value">${done}</div></div>
   `;
+}
+
+// ── FINANCE：從 Google Sheets 讀取 ────────────────────────
+function loadFinance(){
+  if(!accessToken){ alert('請先登入'); return; }
+  const base = 'https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID;
+
+  // 讀年度總覽 + 收款紀錄
+  Promise.all([
+    fetch(`${base}/values/年度總覽!B4:D20`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+    fetch(`${base}/values/收款紀錄!A3:I200`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+  ]).then(([summary, payments])=>{
+    renderFinanceSummary(summary.values||[]);
+    renderPaymentList(payments.values||[]);
+  }).catch(e=>{ console.error(e); alert('讀取失敗，請確認 Sheets API 已授權'); });
+}
+
+function renderFinanceSummary(rows){
+  // rows 來自 年度總覽 B4:D20
+  // 找關鍵字列
+  let totalIncome=0, collected=0, pending=0, projectCount=0;
+  let catData=[], monthData=[];
+
+  rows.forEach(r=>{
+    const label=String(r[0]||'').trim();
+    const val=parseFloat(String(r[1]||'').replace(/[^0-9.-]/g,''))||0;
+    if(label.includes('今年總接案')) totalIncome=val;
+    if(label.includes('已收款合計')) collected=val;
+    if(label.includes('待收款合計')) pending=val;
+    if(label.includes('進行中')) projectCount=val;
+  });
+
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">今年總接案金額</div><div class="stat-value green">$${totalIncome.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">已收款</div><div class="stat-value">$${collected.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">待收款</div><div class="stat-value" style="color:var(--amber-text)">$${pending.toLocaleString()}</div></div>
+  `;
+
+  // 服務分類：從 Sheets 讀來的原始資料重新組
+  fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/年度總覽!B12:D18',
+    {headers:{Authorization:'Bearer '+accessToken}})
+  .then(r=>r.json()).then(d=>{
+    const rows2=d.values||[];
+    const catHTML = rows2.filter(r=>r[0]&&r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
+      const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
+      const pct=r[2]||'';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px">
+        <span>${r[0]}</span>
+        <span style="display:flex;gap:12px">
+          <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${pct}</span>
+          <span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span>
+        </span>
+      </div>`;
+    }).join('');
+    document.getElementById('cat-breakdown').innerHTML = catHTML||'<div style="font-size:12px;color:var(--text-faint);padding:8px 0">尚無資料</div>';
+  });
+
+  // 月份分析
+  fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/年度總覽!B22:D33',
+    {headers:{Authorization:'Bearer '+accessToken}})
+  .then(r=>r.json()).then(d=>{
+    const rows3=d.values||[];
+    const monthHTML = rows3.filter(r=>r[0]&&r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
+      const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px">
+        <span>${r[0]}</span>
+        <span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('monthly-breakdown').innerHTML = monthHTML||'<div style="font-size:12px;color:var(--text-faint);padding:8px 0">尚無已收款紀錄</div>';
+  });
+}
+
+function renderPaymentList(rows){
+  // 跳過空列，顯示有客戶或有金額的列
+  const STATUS_STYLE = {
+    '✦ 已付款 ✦': 'background:#F7EED5;color:#8B6914',
+    '✳ 待付款 ✳': 'background:#F4F4F4;color:#666660',
+  };
+  let currentClient='', currentProject='';
+  const html = rows.filter(r=>r.some(c=>c&&String(c).trim())).map(r=>{
+    const client  = String(r[0]||'').trim();
+    const project = String(r[1]||'').trim();
+    const cat     = String(r[2]||'').trim();
+    const total   = String(r[3]||'').trim();
+    const amount  = String(r[4]||'').trim();
+    const period  = String(r[5]||'').trim();
+    const date    = String(r[6]||'').trim();
+    const status  = String(r[7]||'').trim();
+    const note    = String(r[8]||'').trim();
+
+    if(client) currentClient=client;
+    if(project) currentProject=project;
+
+    const statusStyle = STATUS_STYLE[status]||'background:#eee;color:#888';
+    if(!amount && !period && !status) return '';
+
+    return `<div style="display:grid;grid-template-columns:auto 1fr auto auto auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:0.5px solid var(--border);font-size:12px">
+      <div>
+        <div style="font-weight:500;font-size:13px">${client||''}</div>
+        <div style="color:var(--text-muted)">${project||''}</div>
+      </div>
+      <div style="color:var(--text-muted)">${period}</div>
+      <div style="font-family:var(--mono);font-weight:500">${amount}</div>
+      <div style="font-size:11px;color:var(--text-faint)">${date}</div>
+      <div style="padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500;${statusStyle}">${status}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('payment-list').innerHTML = `
+    <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      ${html||'<div style="padding:1rem;font-size:13px;color:var(--text-faint);text-align:center">尚無收款紀錄</div>'}
+    </div>`;
+}
+
+// ── 日曆：不需要填日期，移到階段就建立 ──────────────────
+function addToCalendar(p, type){
+  if(!accessToken) return;
+  const today = new Date().toISOString().split('T')[0];
+  const labels = {deposit:'訂金到帳',proposal:'提案',delivery:'完稿交件'};
+  const dates  = {deposit:p.depositDate||today, proposal:p.proposal||today, delivery:p.deadline||today};
+  const colors = {deposit:'5', proposal:'7', delivery:'2'};
+
+  const event = {
+    summary: `[Yu(r) Room] ${p.client} — ${labels[type]}`,
+    description: `案件：${p.project}\n服務：${CAT_MAP[p.cat]||''}\n${p.note||''}`,
+    start: { date: dates[type] },
+    end:   { date: dates[type] },
+    colorId: colors[type],
+  };
+
+  fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+    method:'POST',
+    headers:{ Authorization:'Bearer '+accessToken, 'Content-Type':'application/json' },
+    body: JSON.stringify(event),
+  }).then(r=>r.json()).then(ev=>{
+    if(ev.id){ console.log('日曆事件已建立：',ev.summary); }
+    else { console.log('日曆回應：',ev); }
+  });
 }
 
 // ── UTILS ─────────────────────────────────────────────────
