@@ -3,286 +3,266 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yu(r) Room Studio</title>
+<title>Yu(r) Room Design</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
-:root {
-  --bg: #F7F5F2;
-  --surface: #FFFFFF;
-  --border: #E8E4DF;
-  --border-strong: #C8C4BF;
-  --text: #1A1A1A;
-  --text-muted: #888880;
-  --text-faint: #B8B4AF;
-  --accent: #0F6E56;
-  --accent-light: #E1F5EE;
-  --accent-dark: #085041;
-  --amber: #F7EED5;
-  --amber-text: #8B6914;
-  --gray-pill: #F4F4F4;
-  --gray-text: #666660;
-  --danger: #E24B4A;
-  --font: 'DM Sans', sans-serif;
-  --mono: 'DM Mono', monospace;
-  --radius: 10px;
-  --radius-sm: 6px;
+:root{
+  --bg:#F7F5F2;--surface:#fff;--border:#E8E4DF;--border-strong:#C8C4BF;
+  --text:#1A1A1A;--muted:#888880;--faint:#B8B4AF;
+  --accent:#0F6E56;--accent-l:#E1F5EE;--accent-d:#085041;
+  --amber:#F7EED5;--amber-t:#8B6914;--gray:#F4F4F4;--gray-t:#666660;
+  --danger:#E24B4A;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --r:10px;--rs:6px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
-/* ── AUTH SCREEN ── */
-#auth-screen {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; flex-direction: column; gap: 1.5rem; padding: 2rem;
-}
-.auth-card {
-  background: var(--surface); border: 0.5px solid var(--border);
-  border-radius: var(--radius); padding: 2.5rem; text-align: center;
-  max-width: 360px; width: 100%;
-}
-.auth-logo { font-size: 22px; font-weight: 300; letter-spacing: .08em; margin-bottom: .5rem; }
-.auth-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 2rem; letter-spacing: .06em; }
-.auth-btn {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%; padding: 11px 20px; background: var(--text); color: white;
-  border: none; border-radius: var(--radius-sm); font-family: var(--font);
-  font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity .15s;
-}
-.auth-btn:hover { opacity: .85; }
-.auth-btn img { width: 18px; height: 18px; }
+/* AUTH */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.auth-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;max-width:340px;width:100%}
+.auth-logo{font-size:22px;font-weight:300;letter-spacing:.08em;margin-bottom:.4rem}
+.auth-sub{font-size:11px;color:var(--muted);margin-bottom:2rem;letter-spacing:.08em;text-transform:uppercase}
+.auth-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 20px;background:var(--text);color:#fff;border:none;border-radius:var(--rs);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.auth-btn:hover{opacity:.85}
+.auth-btn img{width:18px;height:18px}
 
-/* ── APP LAYOUT ── */
-#app { display: none; min-height: 100vh; }
-.sidebar {
-  width: 220px; height: 100vh; position: fixed; left: 0; top: 0;
-  background: var(--surface); border-right: 0.5px solid var(--border);
-  display: flex; flex-direction: column; padding: 1.25rem 0; z-index: 50;
-}
-.sidebar-logo { padding: 0 1.25rem 1.25rem; border-bottom: 0.5px solid var(--border); }
-.sidebar-logo-text { font-size: 15px; font-weight: 400; letter-spacing: .06em; }
-.sidebar-logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.nav { flex: 1; padding: 1rem 0; }
-.nav-item {
-  display: flex; align-items: center; gap: 9px; padding: 8px 1.25rem;
-  font-size: 13px; color: var(--text-muted); cursor: pointer;
-  border-left: 2px solid transparent; transition: all .12s;
-}
-.nav-item:hover { color: var(--text); background: var(--bg); }
-.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); font-weight: 500; }
-.nav-item i { font-size: 16px; }
-.sidebar-user { padding: 1rem 1.25rem; border-top: 0.5px solid var(--border); }
-.user-info { display: flex; align-items: center; gap: 8px; }
-.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--accent-dark); overflow: hidden; }
-.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.user-name { font-size: 12px; font-weight: 500; }
-.user-email { font-size: 11px; color: var(--text-muted); }
-.logout-btn { margin-top: 8px; background: none; border: none; font-family: var(--font); font-size: 11px; color: var(--text-faint); cursor: pointer; padding: 0; }
-.logout-btn:hover { color: var(--danger); }
+/* LAYOUT */
+#app{display:none;min-height:100vh}
+.sidebar{width:210px;height:100vh;position:fixed;left:0;top:0;background:var(--surface);border-right:0.5px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 0;z-index:50}
+.sidebar-logo{padding:0 1.25rem 1rem;border-bottom:0.5px solid var(--border);margin-bottom:.5rem}
+.logo-text{font-size:14px;font-weight:400;letter-spacing:.06em}
+.logo-sub{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.04em}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 1.25rem;font-size:13px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .12s}
+.nav-item:hover{color:var(--text);background:var(--bg)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-l);font-weight:500}
+.nav-item i{font-size:16px}
+.sidebar-bottom{padding:1rem 1.25rem;border-top:0.5px solid var(--border);margin-top:auto}
+.u-row{display:flex;align-items:center;gap:8px}
+.u-av{width:28px;height:28px;border-radius:50%;background:var(--accent-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--accent-d);overflow:hidden;flex-shrink:0}
+.u-av img{width:100%;height:100%;object-fit:cover}
+.u-name{font-size:12px;font-weight:500}
+.u-email{font-size:11px;color:var(--muted)}
+.logout-btn{margin-top:6px;background:none;border:none;font-family:var(--font);font-size:11px;color:var(--faint);cursor:pointer;padding:0}
+.logout-btn:hover{color:var(--danger)}
 
-.main { margin-left: 220px; padding: 1.5rem 2rem; min-height: 100vh; }
-.page { display: none; }
-.page.active { display: block; }
-.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
-.page-title { font-size: 18px; font-weight: 500; }
+.main{margin-left:210px;padding:1.5rem 2rem;min-height:100vh}
+.page{display:none}
+.page.active{display:block}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.page-title{font-size:18px;font-weight:500}
 
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 14px; border-radius: var(--radius-sm); font-family: var(--font);
-  font-size: 13px; cursor: pointer; border: 0.5px solid var(--border-strong);
-  background: none; color: var(--text-muted); transition: all .12s;
-}
-.btn:hover { background: var(--bg); color: var(--text); }
-.btn.primary { background: var(--text); color: white; border-color: transparent; }
-.btn.primary:hover { opacity: .85; }
-.btn.sm { padding: 4px 9px; font-size: 11px; }
-.btn.danger { color: var(--danger); border-color: var(--danger); }
-.btn.danger:hover { background: #fff0f0; }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--rs);font-family:var(--font);font-size:13px;cursor:pointer;border:0.5px solid var(--border-strong);background:none;color:var(--muted);transition:all .12s}
+.btn:hover{background:var(--bg);color:var(--text)}
+.btn.primary{background:var(--text);color:#fff;border-color:transparent}
+.btn.primary:hover{opacity:.85}
+.btn.sm{padding:3px 8px;font-size:11px}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.danger:hover{background:#fff0f0}
+.btn.ghost{border:none;padding:4px 6px;color:var(--faint)}
+.btn.ghost:hover{color:var(--text);background:var(--border)}
 
-/* ── BOARD ── */
-.board-wrap { overflow-x: auto; padding-bottom: 1rem; }
-.board { display: flex; gap: 12px; min-width: max-content; }
-.col {
-  width: 175px; flex-shrink: 0; background: var(--surface);
-  border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px;
-  min-height: 300px;
-}
-.col.drag-over { border-color: var(--accent); background: var(--accent-light); }
-.col-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.col-title { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
-.col-count { font-size: 10px; background: var(--bg); border: 0.5px solid var(--border); border-radius: 10px; padding: 1px 6px; color: var(--text-faint); }
+/* BOARD */
+.board-wrap{overflow-x:auto;padding-bottom:1rem}
+.board{display:flex;gap:10px;min-width:max-content}
+.col{width:168px;flex-shrink:0;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:10px;min-height:280px}
+.col.drag-over{border-color:var(--accent);background:var(--accent-l)}
+.col-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.col-title{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.col-count{font-size:10px;background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:1px 6px;color:var(--faint)}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rs);padding:9px;margin-bottom:6px;cursor:grab;transition:border-color .12s}
+.card:hover{border-color:var(--border-strong)}
+.card:active{cursor:grabbing;opacity:.5}
+.card-client{font-size:12px;font-weight:500;margin-bottom:1px}
+.card-project{font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.4}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.cat-pill{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.cat-brand{background:#E1F5EE;color:#085041}.cat-pack{background:#FAECE7;color:#712B13}
+.cat-graphic{background:#E6F1FB;color:#0C447C}.cat-social{background:#FBEAF0;color:#72243E}
+.cat-digital{background:#FAEEDA;color:#633806}.cat-other{background:#F1EFE8;color:#444441}
+.card-amount{font-size:10px;color:var(--faint);font-family:var(--mono)}
+.card-date{font-size:10px;color:var(--faint);margin-top:3px;display:flex;align-items:center;gap:3px}
+.card-btns{display:flex;gap:2px;margin-top:6px;border-top:0.5px solid var(--border);padding-top:6px}
+.col-empty{text-align:center;padding:16px 0;font-size:11px;color:var(--faint)}
 
-.card {
-  background: var(--bg); border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm); padding: 9px; margin-bottom: 7px;
-  cursor: grab; transition: border-color .12s;
-}
-.card:hover { border-color: var(--border-strong); }
-.card:active { cursor: grabbing; opacity: .5; }
-.card-client { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
-.card-project { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; line-height: 1.4; }
-.card-footer { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-.cat-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; white-space: nowrap; }
-.cat-brand   { background: #E1F5EE; color: #085041; }
-.cat-pack    { background: #FAECE7; color: #712B13; }
-.cat-graphic { background: #E6F1FB; color: #0C447C; }
-.cat-social  { background: #FBEAF0; color: #72243E; }
-.cat-digital { background: #FAEEDA; color: #633806; }
-.cat-other   { background: #F1EFE8; color: #444441; }
-.card-amount { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
-.card-btns { display: flex; gap: 3px; margin-top: 7px; border-top: 0.5px solid var(--border); padding-top: 7px; }
-.card-date { font-size: 10px; color: var(--text-faint); margin-top: 4px; display: flex; align-items: center; gap: 3px; }
-.col-empty { text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-faint); }
+/* ARCHIVE */
+.archive-section{margin-top:2rem}
+.archive-title{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--border)}
+.archive-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.archive-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:10px;font-size:12px}
+.archive-client{font-weight:500;margin-bottom:2px}
+.archive-project{color:var(--muted);margin-bottom:6px;font-size:11px}
+.archive-meta{display:flex;justify-content:space-between;align-items:center}
 
-/* ── SOP ── */
-.sop-list { display: flex; flex-direction: column; gap: 8px; max-width: 680px; }
-.sop-item { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-.sop-head {
-  display: flex; align-items: center; gap: 10px; padding: 11px 14px;
-  background: var(--surface); cursor: pointer; user-select: none;
-}
-.sop-num {
-  width: 24px; height: 24px; border-radius: 50%; background: var(--text);
-  color: white; font-size: 11px; font-weight: 500; display: flex;
-  align-items: center; justify-content: center; flex-shrink: 0;
-}
-.sop-stage-name { font-size: 13px; font-weight: 500; flex: 1; }
-.sop-body { display: none; padding: 10px 14px; border-top: 0.5px solid var(--border); background: var(--bg); }
-.sop-body.open { display: block; }
-.sop-tasks { list-style: none; }
-.sop-tasks li { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-.sop-tasks li:last-child { border-bottom: none; }
-.sop-tasks li i { color: var(--text-faint); flex-shrink: 0; margin-top: 1px; }
+/* SOP */
+.sop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sop-item{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sop-head{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface);border-bottom:0.5px solid var(--border)}
+.sop-num{width:24px;height:24px;border-radius:50%;background:var(--text);color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sop-stage-name{font-size:13px;font-weight:500}
+.sop-body{padding:10px 14px;background:var(--bg)}
+.sop-tasks{list-style:none}
+.sop-tasks li{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px;color:var(--muted);line-height:1.5}
+.sop-tasks li:last-child{border-bottom:none}
+.sop-tasks li i{color:var(--faint);flex-shrink:0;margin-top:1px;font-size:14px}
 
-/* ── MODAL ── */
-.modal-bg {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35);
-  z-index: 200; align-items: center; justify-content: center; padding: 1rem;
-}
-.modal-bg.open { display: flex; }
-.modal {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 1.5rem; width: min(480px, 100%); max-height: 90vh;
-  overflow-y: auto; border: 0.5px solid var(--border);
-}
-.modal-title { font-size: 15px; font-weight: 500; margin-bottom: 1.25rem; }
-.field { margin-bottom: .875rem; }
-.field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; letter-spacing: .04em; }
-.field input, .field select, .field textarea {
-  width: 100%; font-family: var(--font); font-size: 13px;
-  border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm);
-  padding: 8px 10px; background: var(--surface); color: var(--text);
-}
-.field textarea { resize: vertical; min-height: 70px; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; border-top: 0.5px solid var(--border); padding-top: 1rem; }
+/* TEMPLATES */
+.tmpl-section{margin-top:1.5rem}
+.tmpl-title{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.tmpl-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1rem}
+.tmpl-label{font-size:11px;font-weight:500;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.tmpl-text{font-size:12px;color:var(--text);line-height:1.75;white-space:pre-wrap;background:var(--bg);border-radius:var(--rs);padding:10px;border:0.5px solid var(--border)}
+.tmpl-copy{margin-top:8px}
 
-/* ── STATS ── */
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; margin-bottom: 1.5rem; }
-.stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
-.stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
-.stat-value { font-size: 22px; font-weight: 500; font-family: var(--mono); }
-.stat-value.green { color: var(--accent); }
+/* DB */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.db-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1rem;display:flex;align-items:flex-start;gap:10px;transition:border-color .12s;text-decoration:none;color:inherit}
+.db-card:hover{border-color:var(--accent);background:var(--accent-l)}
+.db-icon{width:36px;height:36px;border-radius:var(--rs);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.db-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.db-url{font-size:11px;color:var(--muted)}
+.db-add{background:none;border:0.5px dashed var(--border-strong);border-radius:var(--r);padding:1rem;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .12s}
+.db-add:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
 
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .sidebar { width: 100%; height: auto; position: fixed; bottom: 0; top: auto; flex-direction: row; padding: 0; border-right: none; border-top: 0.5px solid var(--border); z-index: 100; }
-  .sidebar-logo, .sidebar-user { display: none; }
-  .nav { display: flex; padding: 0; overflow-x: auto; }
-  .nav-item { flex-direction: column; gap: 2px; padding: 10px 12px; font-size: 9px; border-left: none; border-top: 2px solid transparent; white-space: nowrap; }
-  .nav-item.active { border-left: none; border-top-color: var(--accent); }
-  .main { margin-left: 0; margin-bottom: 60px; padding: 1rem; }
-  .board { gap: 8px; }
-  .col { width: 155px; }
+/* FINANCE */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem}
+.stat-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:500;font-family:var(--mono)}
+.stat-value.green{color:var(--accent)}
+.fin-section-title{font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.fin-row:last-child{border-bottom:none}
+.pay-table{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.pay-row{display:grid;grid-template-columns:180px 1fr 110px 100px 110px;gap:0;align-items:stretch;border-bottom:0.5px solid var(--border);font-size:12px}
+.pay-row:last-child{border-bottom:none}
+.pay-row.header{background:var(--text);color:#fff;font-size:11px;font-weight:500;letter-spacing:.04em}
+.pay-cell{padding:9px 12px;display:flex;align-items:center}
+.pay-cell.right{justify-content:flex-end;font-family:var(--mono)}
+.pay-cell.center{justify-content:center}
+.status-pill{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r);padding:1.5rem;width:min(500px,100%);max-height:90vh;overflow-y:auto;border:0.5px solid var(--border)}
+.modal-title{font-size:15px;font-weight:500;margin-bottom:1.25rem}
+.field{margin-bottom:.75rem}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:3px;letter-spacing:.04em}
+.field input,.field select,.field textarea{width:100%;font-family:var(--font);font-size:13px;border:0.5px solid var(--border-strong);border-radius:var(--rs);padding:8px 10px;background:var(--surface);color:var(--text)}
+.field textarea{resize:vertical;min-height:65px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;border-top:0.5px solid var(--border);padding-top:1rem}
+.field-group-label{font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin:1rem 0 .5rem;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{width:100%;height:auto;position:fixed;bottom:0;top:auto;flex-direction:row;padding:0;border-right:none;border-top:0.5px solid var(--border);z-index:100}
+  .sidebar-logo,.sidebar-bottom{display:none}
+  .sidebar nav{display:flex;overflow-x:auto}
+  .nav-item{flex-direction:column;gap:2px;padding:10px 12px;font-size:9px;border-left:none;border-top:2px solid transparent;white-space:nowrap}
+  .nav-item.active{border-left:none;border-top-color:var(--accent)}
+  .main{margin-left:0;margin-bottom:60px;padding:1rem}
+  .sop-grid{grid-template-columns:1fr}
+  .pay-row{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">Yu(r) Room</div>
-    <div class="auth-sub">DESIGN STUDIO</div>
+    <div class="auth-sub">Design Studio</div>
     <button class="auth-btn" onclick="signIn()">
-      <img src="https://www.google.com/favicon.ico" alt="Google">
+      <img src="https://www.google.com/favicon.ico" alt="">
       使用 Google 帳號登入
     </button>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app">
   <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-text">Yu(r) Room</div>
-      <div class="sidebar-logo-sub">Studio Dashboard</div>
+      <div class="logo-text">Yu(r) Room</div>
+      <div class="logo-sub">Design Studio</div>
     </div>
-    <nav class="nav">
+    <nav>
       <div class="nav-item active" onclick="showPage('board',this)"><i class="ti ti-layout-kanban"></i>看板</div>
       <div class="nav-item" onclick="showPage('sop',this)"><i class="ti ti-checklist"></i>接案 SOP</div>
-      <div class="nav-item" onclick="showPage('finance',this)"><i class="ti ti-chart-pie"></i>財務總覽</div>
+      <div class="nav-item" onclick="showPage('finance',this)" id="nav-finance"><i class="ti ti-chart-pie"></i>財務總覽</div>
+      <div class="nav-item" onclick="showPage('db',this)"><i class="ti ti-database"></i>資料庫</div>
     </nav>
-    <div class="sidebar-user">
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar"></div>
-        <div>
-          <div class="user-name" id="user-name">—</div>
-          <div class="user-email" id="user-email">—</div>
-        </div>
+    <div class="sidebar-bottom">
+      <div class="u-row">
+        <div class="u-av" id="u-av"></div>
+        <div><div class="u-name" id="u-name">—</div><div class="u-email" id="u-email">—</div></div>
       </div>
       <button class="logout-btn" onclick="signOut()">登出</button>
     </div>
   </div>
 
   <main class="main">
+
     <!-- 看板 -->
     <div class="page active" id="page-board">
-      <div class="page-header">
+      <div class="page-hd">
         <div class="page-title">專案看板</div>
         <button class="btn primary" onclick="openNew()"><i class="ti ti-plus"></i> 新增案件</button>
       </div>
       <div class="board-wrap"><div class="board" id="board"></div></div>
+      <div class="archive-section">
+        <div class="archive-title">結案紀錄 <span id="archive-count" style="font-weight:400;color:var(--faint)"></span></div>
+        <div class="archive-list" id="archive-list"></div>
+      </div>
     </div>
 
     <!-- SOP -->
     <div class="page" id="page-sop">
-      <div class="page-header"><div class="page-title">接案 SOP</div></div>
-      <div class="sop-list" id="sop-list"></div>
+      <div class="page-hd"><div class="page-title">接案 SOP</div></div>
+      <div class="sop-grid" id="sop-grid"></div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-title">回覆模板</div>
+        <div class="tmpl-grid" id="tmpl-grid"></div>
+      </div>
     </div>
 
     <!-- 財務 -->
     <div class="page" id="page-finance">
-      <div class="page-header">
+      <div class="page-hd">
         <div class="page-title">財務總覽</div>
-        <button class="btn" onclick="loadFinance()"><i class="ti ti-refresh"></i> 更新資料</button>
+        <div style="display:flex;gap:8px">
+          <a href="https://docs.google.com/spreadsheets/d/1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0/edit" target="_blank" class="btn sm"><i class="ti ti-external-link"></i> 開啟 Sheets</a>
+          <button class="btn" onclick="loadFinance()"><i class="ti ti-refresh"></i> 更新</button>
+        </div>
       </div>
       <div class="stats" id="stats"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem">
-        <div>
-          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">服務分類</div>
-          <div id="cat-breakdown"></div>
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">月份收款</div>
-          <div id="monthly-breakdown"></div>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem">
+        <div><div class="fin-section-title">服務分類</div><div id="cat-breakdown" style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:0 12px"></div></div>
+        <div><div class="fin-section-title">月份收款（已付款）</div><div id="monthly-breakdown" style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:0 12px"></div></div>
       </div>
-      <div style="margin-top:1.5rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase">收款紀錄</div>
-          <a href="https://docs.google.com/spreadsheets/d/1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0/edit" target="_blank" class="btn sm"><i class="ti ti-external-link"></i> 開啟 Sheets</a>
-        </div>
-        <div id="payment-list"></div>
-      </div>
+      <div class="fin-section-title">收款紀錄</div>
+      <div class="pay-table" id="payment-list"></div>
     </div>
+
+    <!-- 資料庫 -->
+    <div class="page" id="page-db">
+      <div class="page-hd">
+        <div class="page-title">資料庫</div>
+        <button class="btn primary" onclick="openAddDb()"><i class="ti ti-plus"></i> 新增連結</button>
+      </div>
+      <div class="db-grid" id="db-grid"></div>
+    </div>
+
   </main>
 </div>
 
-<!-- 新增/編輯 Modal -->
-<div class="modal-bg" id="modal">
+<!-- 新增/編輯案件 Modal -->
+<div class="modal-bg" id="modal-card">
   <div class="modal">
     <div class="modal-title" id="modal-title">新增案件</div>
     <input type="hidden" id="f-id">
@@ -312,110 +292,160 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
         <option value="6">完稿</option><option value="7">結案</option>
       </select>
     </div>
+    <div class="field-group-label">排程日期</div>
     <div class="field-row">
       <div class="field"><label>期望完成日</label><input id="f-deadline" type="date"></div>
       <div class="field"><label>第一次提案日</label><input id="f-proposal" type="date"></div>
     </div>
     <div class="field-row">
-      <div class="field"><label>訂金收款日</label><input id="f-deposit-date" type="date"></div>
-      <div class="field"><label>交稿日</label><input id="f-delivery" type="date"></div>
+      <div class="field"><label>第一期款收款日</label><input id="f-dep1" type="date"></div>
+      <div class="field"><label>第二期款收款日</label><input id="f-dep2" type="date"></div>
     </div>
-    <div class="field"><label>備註</label><textarea id="f-note" placeholder="特殊需求、客戶聯絡說明..."></textarea></div>
+    <div class="field"><label>實際交稿日</label><input id="f-delivery" type="date"></div>
+    <div class="field"><label>備註</label><textarea id="f-note" placeholder="特殊需求、溝通紀錄..."></textarea></div>
     <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn" onclick="closeModal('modal-card')">取消</button>
       <button class="btn danger" id="btn-del" style="display:none" onclick="deleteCard()">刪除</button>
       <button class="btn primary" onclick="saveCard()">儲存</button>
     </div>
   </div>
 </div>
 
+<!-- 新增資料庫連結 Modal -->
+<div class="modal-bg" id="modal-db">
+  <div class="modal">
+    <div class="modal-title">新增資料庫連結</div>
+    <input type="hidden" id="db-id">
+    <div class="field"><label>名稱</label><input id="db-name" placeholder="收支表"></div>
+    <div class="field"><label>網址</label><input id="db-url" placeholder="https://..."></div>
+    <div class="field"><label>圖示（emoji）</label><input id="db-icon" placeholder="📊" maxlength="2"></div>
+    <div class="field"><label>備註</label><input id="db-note" placeholder="說明這個連結是什麼"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('modal-db')">取消</button>
+      <button class="btn danger" id="db-del" style="display:none" onclick="deleteDb()">刪除</button>
+      <button class="btn primary" onclick="saveDb()">儲存</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── CONFIG ──────────────────────────────────────────────
-const CLIENT_ID = '285105995019-oaipob21hn261fno7ks1tbtv3d5tmi2u.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar.events profile email';
-const SHEET_ID = '1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0';
+const CLIENT_ID='285105995019-oaipob21hn261fno7ks1tbtv3d5tmi2u.apps.googleusercontent.com';
+const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar.events profile email';
+const SHEET_ID='1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0';
 
-const STAGES = ['詢問中','報價寄出','訂金到帳','設計中','提案','修改中','完稿','結案'];
-const CAT_MAP = {brand:'品牌識別',pack:'包裝設計',graphic:'視覺與平面',social:'社群視覺',digital:'數位與動態',other:'其他'};
-const CAT_CLASS = {brand:'cat-brand',pack:'cat-pack',graphic:'cat-graphic',social:'cat-social',digital:'cat-digital',other:'cat-other'};
+const STAGES=['詢問中','報價寄出','訂金到帳','設計中','提案','修改中','完稿','結案'];
+const CAT_MAP={brand:'品牌識別',pack:'包裝設計',graphic:'視覺與平面',social:'社群視覺',digital:'數位與動態',other:'其他'};
+const CAT_CLASS={brand:'cat-brand',pack:'cat-pack',graphic:'cat-graphic',social:'cat-social',digital:'cat-digital',other:'cat-other'};
 
-const SOP = [
+const SOP=[
   {stage:'詢問中',tasks:['回覆詢價訊息（24hr 內）','了解需求：品牌現況、項目、預算、時程','確認是否在服務範圍內','評估是否接案']},
-  {stage:'報價寄出',tasks:['依需求填寫報價單（Google Sheets）','產生 PDF 並寄出','說明修改次數、付款方式','告知報價效期 30 天','追蹤：若 3 天無回音，發一次詢問訊息']},
-  {stage:'訂金到帳',tasks:['確認匯款金額正確（總價 50%）','開立收據並寄出','將案件記入收支表（第一期款）','確認交件時程，告知客戶預計提案日','建立案件資料夾（依歸檔架構）']},
-  {stage:'設計中',tasks:['蒐集品牌相關資料、競品參考','確認設計方向（mood board）','執行設計，整理 WIP 版本','定期回顧是否符合客戶需求方向']},
-  {stage:'提案',tasks:['準備 3 款初稿提案','製作提案簡報 / PDF','與客戶說明設計思考脈絡','記錄客戶回饋，確認選定方向']},
-  {stage:'修改中',tasks:['確認修改需求（文字記錄）','追蹤修改次數（超出告知加收費用）','大幅修改需重新報價','每次修改後請客戶書面確認']},
-  {stage:'完稿',tasks:['整理交付檔案（AI / PDF / JPG）','確認所有交付項目符合合約','發送尾款請款通知','寄出完稿檔與收據（尾款到帳後）','將尾款記入收支表（第二期款）']},
+  {stage:'報價寄出',tasks:['依需求填寫報價單（Google Sheets）','產生 PDF 並寄出','說明修改次數、付款方式','告知報價效期 30 天','追蹤：若 3 天無回音，發詢問訊息']},
+  {stage:'訂金到帳',tasks:['確認匯款金額（總價 50%）','開立收據並寄出','記入收支表（第一期款）','告知客戶預計提案日','建立案件資料夾']},
+  {stage:'設計中',tasks:['蒐集品牌資料、競品參考','確認設計方向（mood board）','執行設計，整理 WIP 版本','定期確認是否符合客戶方向']},
+  {stage:'提案',tasks:['準備 3 款初稿提案','製作提案簡報 / PDF','說明設計思考脈絡','記錄客戶回饋，確認選定方向']},
+  {stage:'修改中',tasks:['確認修改需求（文字記錄）','追蹤修改次數（超出告知加收）','大幅修改需重新報價','每次修改後請客戶書面確認']},
+  {stage:'完稿',tasks:['整理交付檔案（AI / PDF / JPG）','確認所有交付項目符合合約','發送尾款請款通知','寄出完稿檔與收據（尾款到帳後）','記入收支表（第二期款）']},
   {stage:'結案',tasks:['確認客戶滿意度','詢問是否可作為作品集展示','歸檔所有文件','檢討時間與定價是否合理']},
 ];
 
-// ── STATE ────────────────────────────────────────────────
-let tokenClient, accessToken, userInfo;
-let projects = JSON.parse(localStorage.getItem('yurroom_projects')||'[]');
-let editId = null, dragId = null;
+const TEMPLATES=[
+  {platform:'Threads',type:'品牌',text:`Let's do something fun together.
+一起將抽象的靈感，築成獨一無二的品牌寓所
+歡迎到主頁看我的作品，隨時私訊聊聊🪬`},
+  {platform:'Threads',type:'包裝',text:`Let's do something fun together.
+我是擁有 5 年經驗的包裝設計師
+曾操刀過多年知名連鎖品牌的節慶禮盒
+歡迎到主頁看我的作品，隨時私訊聊聊🪬`},
+  {platform:'Threads',type:'All',text:`Let's do something fun together.
+每一個有趣的專案，都始於一個微小的念頭
+我是擁有 5 年以上品牌與包裝經驗的視覺設計師
+歡迎到主頁看我的作品，隨時私訊聊聊🪬`},
+  {platform:'私訊',type:'品牌',text:`Hi 對方稱呼！我是設計師郁瑄
+我擁有 5 年以上品牌的豐富經驗
+曾操刀黑貓宅急便25週年logo視覺設計
+擅長將抽象的品牌理念，轉化為具體的視覺記憶
 
-// ── AUTH ─────────────────────────────────────────────────
+更多作品🔗
+https://reurl.cc/mkgbg7`},
+  {platform:'私訊',type:'包裝',text:`Hi 對方稱呼！我是設計師郁瑄
+擁有 5 年的包裝禮盒實務經驗
+曾操刀星巴克母親/父親/中秋節禮盒設計
+以及黑貓宅急便25週年紀念禮盒
+從視覺、材質到印刷，提供您兼具美感與實用性的設計方案
+希望有機會能為您服務✨
+
+更多包裝作品🔗
+https://reurl.cc/k8A30K`},
+  {platform:'私訊',type:'All',text:`Hi [對方稱呼]！我是設計師郁瑄
+擁有 5 年以上的品牌視覺與包裝實務經驗
+曾操刀星巴克節慶禮盒、黑貓宅急便25週年logo與紀念禮盒設計
+無論是將抽象理念轉化為視覺記憶的品牌識別
+或是從視覺、材質到印刷落地的包裝規劃
+都能為您提供兼具美感與實用性的完整設計方案
+希望未來有機會能為您服務✨
+
+更多作品🔗
+https://reurl.cc/mkgbg7`},
+];
+
+const DEFAULT_DB=[
+  {id:'db1',name:'收支表',url:'https://docs.google.com/spreadsheets/d/1h5VxrPjWBu_2O-VQlWi-YMOiF9mf9yTIY9pHopNRBE0/edit',icon:'📊',note:'yu(r) room_finance'},
+  {id:'db2',name:'報價單',url:'https://docs.google.com/spreadsheets',icon:'🗒',note:'Google Sheets 報價單公版'},
+  {id:'db3',name:'設計需求問卷',url:'https://tally.so/r/68e8W5',icon:'📋',note:'tally.so'},
+  {id:'db4',name:'IG',url:'https://instagram.com/yur.room.design/',icon:'📷',note:'instagram.com/yur.room.design'},
+  {id:'db5',name:'作品網站',url:'https://readymag.website',icon:'🌐',note:'readymag.website'},
+  {id:'db6',name:'Line@',url:'https://lin.ee/tHTGrt1I',icon:'💬',note:'lin.ee/tHTGrt1I'},
+];
+
+let tokenClient,accessToken,userInfo;
+let projects=JSON.parse(localStorage.getItem('yurroom_projects')||'[]');
+let dbItems=JSON.parse(localStorage.getItem('yurroom_db')||JSON.stringify(DEFAULT_DB));
+let editId=null,editDbId=null,dragId=null;
+// 追蹤已建立過日曆事件的 key，避免重複
+let calendarCreated=JSON.parse(localStorage.getItem('yurroom_cal')||'{}');
+
+// ── AUTH ──────────────────────────────────────────────────
 function loadGIS(){
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (resp) => {
-      if(resp.error) return;
-      accessToken = resp.access_token;
-      localStorage.setItem('yurroom_token', accessToken);
-      fetchUserInfo();
-    }
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID, scope:SCOPES,
+    callback:(r)=>{ if(r.error) return; accessToken=r.access_token; localStorage.setItem('yurroom_token',accessToken); fetchUserInfo(); }
   });
 }
-
-function signIn(){
-  if(typeof google === 'undefined'){ alert('Google API 載入中，請稍後再試'); return; }
-  tokenClient.requestAccessToken({prompt:'consent'});
-}
-
-function signOut(){
-  google.accounts.oauth2.revoke(accessToken, ()=>{});
-  accessToken = null;
-  localStorage.removeItem('yurroom_token');
-  document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-}
-
+function signIn(){ if(typeof google==='undefined'){alert('Google API 載入中');return;} tokenClient.requestAccessToken({prompt:'consent'}); }
+function signOut(){ google.accounts.oauth2.revoke(accessToken,()=>{}); accessToken=null; localStorage.removeItem('yurroom_token'); document.getElementById('auth-screen').style.display='flex'; document.getElementById('app').style.display='none'; }
 function fetchUserInfo(){
-  fetch('https://www.googleapis.com/oauth2/v3/userinfo',{
-    headers:{Authorization:'Bearer '+accessToken}
-  }).then(r=>r.json()).then(u=>{
-    userInfo = u;
-    const av = document.getElementById('user-avatar');
-    if(u.picture){ av.innerHTML=`<img src="${u.picture}" alt="">`; }
-    else { av.textContent = (u.name||'U')[0].toUpperCase(); }
-    document.getElementById('user-name').textContent = u.name||'';
-    document.getElementById('user-email').textContent = u.email||'';
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    renderBoard(); renderSOP(); renderStats();
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}})
+  .then(r=>r.json()).then(u=>{
+    userInfo=u;
+    const av=document.getElementById('u-av');
+    if(u.picture) av.innerHTML=`<img src="${u.picture}" alt="">`;
+    else av.textContent=(u.name||'U')[0].toUpperCase();
+    document.getElementById('u-name').textContent=u.name||'';
+    document.getElementById('u-email').textContent=u.email||'';
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    renderBoard(); renderSOP(); renderDB(); renderStats();
   });
 }
 
-// ── NAV ──────────────────────────────────────────────────
-function showPage(name, el){
+// ── NAV ───────────────────────────────────────────────────
+function showPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
+  if(name==='finance') loadFinance();
 }
 
 // ── BOARD ─────────────────────────────────────────────────
 function renderBoard(){
-  const board = document.getElementById('board');
-  board.innerHTML = STAGES.map((s,i)=>{
-    const cards = projects.filter(p=>p.stage===i);
+  const active=projects.filter(p=>p.stage<7);
+  const archived=projects.filter(p=>p.stage===7);
+
+  document.getElementById('board').innerHTML=STAGES.slice(0,7).map((s,i)=>{
+    const cards=active.filter(p=>p.stage===i);
     return `<div class="col" data-stage="${i}">
-      <div class="col-head">
-        <span class="col-title">${s}</span>
-        <span class="col-count">${cards.length}</span>
-      </div>
+      <div class="col-hd"><span class="col-title">${s}</span><span class="col-count">${cards.length}</span></div>
       ${cards.length===0?`<div class="col-empty">—</div>`:''}
       ${cards.map(p=>`
         <div class="card" draggable="true" id="card-${p.id}"
@@ -426,65 +456,81 @@ function renderBoard(){
             <span class="cat-pill ${CAT_CLASS[p.cat]||'cat-other'}">${CAT_MAP[p.cat]||'其他'}</span>
             <span class="card-amount">${p.amount?'$'+Number(p.amount).toLocaleString():''}</span>
           </div>
-          ${p.proposal?`<div class="card-date"><i class="ti ti-presentation" style="font-size:11px"></i>提案 ${p.proposal}</div>`:''}
-          ${p.deadline?`<div class="card-date"><i class="ti ti-calendar" style="font-size:11px"></i>交件 ${p.deadline}</div>`:''}
+          ${p.proposal?`<div class="card-date"><i class="ti ti-presentation" style="font-size:10px"></i>提案 ${p.proposal}</div>`:''}
+          ${p.deadline?`<div class="card-date"><i class="ti ti-calendar" style="font-size:10px"></i>完成 ${p.deadline}</div>`:''}
           <div class="card-btns">
-            <button class="btn sm" onclick="openEdit('${p.id}')"><i class="ti ti-edit"></i></button>
-            <button class="btn sm" onclick="move('${p.id}',-1)" title="上一階段"><i class="ti ti-arrow-left"></i></button>
-            <button class="btn sm" onclick="move('${p.id}',1)" title="下一階段"><i class="ti ti-arrow-right"></i></button>
+            <button class="btn ghost sm" onclick="openEdit('${p.id}')" title="編輯"><i class="ti ti-edit"></i></button>
+            <button class="btn ghost sm" onclick="move('${p.id}',-1)" title="上一階段"><i class="ti ti-arrow-left"></i></button>
+            <button class="btn ghost sm" onclick="move('${p.id}',1)" title="下一階段"><i class="ti ti-arrow-right"></i></button>
           </div>
         </div>`).join('')}
     </div>`;
   }).join('');
 
+  // 結案區
+  document.getElementById('archive-count').textContent=`（${archived.length} 件）`;
+  document.getElementById('archive-list').innerHTML=archived.length===0
+    ?`<div style="font-size:12px;color:var(--faint)">尚無結案紀錄</div>`
+    :archived.map(p=>`
+      <div class="archive-card">
+        <div class="archive-client">${p.client}</div>
+        <div class="archive-project">${p.project}</div>
+        <div class="archive-meta">
+          <span class="cat-pill ${CAT_CLASS[p.cat]||'cat-other'}" style="font-size:10px">${CAT_MAP[p.cat]||'其他'}</span>
+          <div style="display:flex;gap:4px">
+            <button class="btn ghost sm" onclick="openEdit('${p.id}')" title="編輯"><i class="ti ti-edit"></i></button>
+          </div>
+        </div>
+      </div>`).join('');
+
+  // drag events
   document.querySelectorAll('.col').forEach(col=>{
-    const si = parseInt(col.dataset.stage);
+    const si=parseInt(col.dataset.stage);
     col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over')});
     col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
-    col.addEventListener('drop',e=>{ e.preventDefault(); col.classList.remove('drag-over'); dropCard(si); });
+    col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('drag-over');dropCard(si)});
   });
 }
 
-function dragStart(e,id){ dragId=id; setTimeout(()=>document.getElementById('card-'+id)?.classList.add('dragging'),0); }
-function dragEnd(){ dragId=null; document.querySelectorAll('.card').forEach(c=>c.classList.remove('dragging')); }
-function dropCard(si){ if(!dragId) return; const p=projects.find(x=>x.id===dragId); if(!p) return; const old=p.stage; p.stage=si; save(); renderBoard(); renderStats(); handleStageChange(p,old,si); }
+function dragStart(e,id){dragId=id;setTimeout(()=>document.getElementById('card-'+id)?.classList.add('dragging'),0)}
+function dragEnd(){dragId=null;document.querySelectorAll('.card').forEach(c=>c.classList.remove('dragging'))}
+function dropCard(si){if(!dragId)return;const p=projects.find(x=>x.id===dragId);if(!p)return;const old=p.stage;p.stage=si;save();renderBoard();renderStats();handleStageChange(p,old,si)}
+function move(id,dir){const p=projects.find(x=>x.id===id);if(!p)return;const old=p.stage;p.stage=Math.max(0,Math.min(7,p.stage+dir));save();renderBoard();renderStats();handleStageChange(p,old,p.stage)}
 
-function move(id,dir){
-  const p=projects.find(x=>x.id===id); if(!p) return;
-  const old=p.stage; p.stage=Math.max(0,Math.min(7,p.stage+dir));
-  save(); renderBoard(); renderStats(); handleStageChange(p,old,p.stage);
-}
-
-// ── STAGE CHANGE HOOKS ────────────────────────────────────
-function handleStageChange(p, oldStage, newStage){
-  if(oldStage!==2 && newStage===2){ addToCalendar(p,'deposit'); }
-  if(oldStage!==4 && newStage===4){ addToCalendar(p,'proposal'); }
-  if(oldStage!==6 && newStage===6){ addToCalendar(p,'delivery'); }
-}
-
-// ── GOOGLE CALENDAR ───────────────────────────────────────
-function addToCalendar(p, type){
+// ── CALENDAR ──────────────────────────────────────────────
+// 日期欄位設定時觸發日曆（不是靠移動卡片）
+function maybeAddCalendar(p, field){
   if(!accessToken) return;
-  const labels = {deposit:'訂金到帳',proposal:'提案',delivery:'完稿交件'};
-  const dates  = {deposit:p.depositDate, proposal:p.proposal, delivery:p.deadline};
-  const dateStr = dates[type];
+  const key=`${p.id}_${field}`;
+  if(calendarCreated[key]) return; // 已建立過，不重複
+
+  const dateMap={deadline:p.deadline, proposal:p.proposal, dep1:p.dep1, dep2:p.dep2, delivery:p.delivery};
+  const labelMap={deadline:'期望完成', proposal:'第一次提案', dep1:'第一期款收款', dep2:'第二期款收款', delivery:'實際交稿'};
+  const colorMap={deadline:'5', proposal:'7', dep1:'2', dep2:'2', delivery:'1'};
+  const dateStr=dateMap[field];
   if(!dateStr) return;
 
-  const event = {
-    summary: `[Yu(r) Room] ${p.client} — ${labels[type]}`,
-    description: `案件：${p.project}\n服務：${CAT_MAP[p.cat]||''}\n${p.note||''}`,
-    start: { date: dateStr },
-    end:   { date: dateStr },
-    colorId: type==='deposit' ? '5' : type==='proposal' ? '7' : '2',
+  const event={
+    summary:`${p.client} — ${labelMap[field]}`,
+    description:`案件：${p.project}\n${p.note||''}`,
+    start:{date:dateStr}, end:{date:dateStr},
+    colorId:colorMap[field]||'5',
   };
 
   fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
     method:'POST',
-    headers:{ Authorization:'Bearer '+accessToken, 'Content-Type':'application/json' },
-    body: JSON.stringify(event),
+    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+    body:JSON.stringify(event),
   }).then(r=>r.json()).then(ev=>{
-    if(ev.id) console.log('日曆事件已建立：',ev.summary);
-  }).catch(e=>console.log('日曆錯誤：',e));
+    if(ev.id){
+      calendarCreated[key]=true;
+      localStorage.setItem('yurroom_cal',JSON.stringify(calendarCreated));
+    }
+  });
+}
+
+function handleStageChange(p,oldS,newS){
+  // 階段移動不直接建立日曆，只在儲存日期時建立
 }
 
 // ── MODAL ─────────────────────────────────────────────────
@@ -492,14 +538,13 @@ function openNew(){
   editId=null;
   document.getElementById('modal-title').textContent='新增案件';
   document.getElementById('btn-del').style.display='none';
-  ['f-id','f-client','f-contact','f-project','f-amount','f-deadline','f-proposal','f-deposit-date','f-delivery','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-id','f-client','f-contact','f-project','f-amount','f-deadline','f-proposal','f-dep1','f-dep2','f-delivery','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-cat').value='brand';
   document.getElementById('f-stage').value='0';
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-card').classList.add('open');
 }
-
 function openEdit(id){
-  const p=projects.find(x=>x.id===id); if(!p) return;
+  const p=projects.find(x=>x.id===id);if(!p)return;
   editId=id;
   document.getElementById('modal-title').textContent='編輯案件';
   document.getElementById('btn-del').style.display='inline-flex';
@@ -512,68 +557,133 @@ function openEdit(id){
   document.getElementById('f-stage').value=String(p.stage||0);
   document.getElementById('f-deadline').value=p.deadline||'';
   document.getElementById('f-proposal').value=p.proposal||'';
-  document.getElementById('f-deposit-date').value=p.depositDate||'';
+  document.getElementById('f-dep1').value=p.dep1||'';
+  document.getElementById('f-dep2').value=p.dep2||'';
   document.getElementById('f-delivery').value=p.delivery||'';
   document.getElementById('f-note').value=p.note||'';
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-card').classList.add('open');
 }
-
-function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function closeModal(id){document.getElementById(id).classList.remove('open')}
 
 function saveCard(){
   const client=document.getElementById('f-client').value.trim();
   const project=document.getElementById('f-project').value.trim();
-  if(!client||!project){ alert('請填入客戶名稱和案件名稱'); return; }
-  const newStage=parseInt(document.getElementById('f-stage').value);
+  if(!client||!project){alert('請填入客戶名稱和案件名稱');return;}
+  const oldP=editId?projects.find(x=>x.id===editId):null;
   const data={
     id:editId||(Date.now().toString(36)+Math.random().toString(36).slice(2,5)),
-    client, project,
+    client,project,
     contact:document.getElementById('f-contact').value,
     cat:document.getElementById('f-cat').value,
     amount:document.getElementById('f-amount').value,
-    stage:newStage,
+    stage:parseInt(document.getElementById('f-stage').value),
     deadline:document.getElementById('f-deadline').value,
     proposal:document.getElementById('f-proposal').value,
-    depositDate:document.getElementById('f-deposit-date').value,
+    dep1:document.getElementById('f-dep1').value,
+    dep2:document.getElementById('f-dep2').value,
     delivery:document.getElementById('f-delivery').value,
     note:document.getElementById('f-note').value,
   };
-  const old = editId ? (projects.find(x=>x.id===editId)?.stage??-1) : -1;
-  if(editId){ projects=projects.map(p=>p.id===editId?data:p); }
-  else { projects.push(data); }
-  save(); closeModal(); renderBoard(); renderStats();
-  if(old!==newStage) handleStageChange(data,old,newStage);
-  else if(!editId && newStage===2) addToCalendar(data,'deposit');
+
+  // 比對哪些日期欄位是新填的，觸發日曆
+  const dateFields=['deadline','proposal','dep1','dep2','delivery'];
+  dateFields.forEach(f=>{
+    if(data[f] && data[f]!==(oldP?.[f]||'')) maybeAddCalendar(data,f);
+  });
+
+  // 比對期款日期，同步到 Sheets
+  if(data.dep1 && data.dep1!==(oldP?.dep1||'')) syncPayment(data,'dep1');
+  if(data.dep2 && data.dep2!==(oldP?.dep2||'')) syncPayment(data,'dep2');
+
+  if(editId) projects=projects.map(p=>p.id===editId?data:p);
+  else projects.push(data);
+
+  save();closeModal('modal-card');renderBoard();renderStats();
 }
 
 function deleteCard(){
-  if(!editId||!confirm('確定刪除？')) return;
+  if(!editId||!confirm('確定刪除？'))return;
   projects=projects.filter(p=>p.id!==editId);
-  save(); closeModal(); renderBoard(); renderStats();
+  save();closeModal('modal-card');renderBoard();renderStats();
+}
+
+// ── SHEETS SYNC ───────────────────────────────────────────
+function syncPayment(p, depField){
+  if(!accessToken) return;
+  const total=Number(p.amount)||0;
+  const half=Math.round(total*0.5);
+  const period=depField==='dep1'?'第一期款':'第二期款';
+  const date=depField==='dep1'?p.dep1:p.dep2;
+  const status='✦ 已付款 ✦';
+
+  // 新增一列到收款紀錄（A欄起）
+  // 格式：客戶,案件,服務,總金額,本次金額,期別,日期,狀態
+  const rowData = depField==='dep1'
+    ? [[p.client,p.project,CAT_MAP[p.cat]||'其他',total,half,period,date,status,'']]
+    : [['','','','',half,period,date,status,'']];
+
+  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/收款紀錄!A3:I3:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{
+    method:'POST',
+    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+    body:JSON.stringify({values:rowData}),
+  }).then(r=>r.json()).then(d=>console.log('Sheets 已新增：',period,d.updates));
 }
 
 // ── SOP ───────────────────────────────────────────────────
 function renderSOP(){
-  document.getElementById('sop-list').innerHTML = SOP.map((s,i)=>`
+  document.getElementById('sop-grid').innerHTML=SOP.map((s,i)=>`
     <div class="sop-item">
-      <div class="sop-head" onclick="toggleSOP(${i})">
+      <div class="sop-head">
         <div class="sop-num">${i+1}</div>
         <div class="sop-stage-name">${s.stage}</div>
-        <i class="ti ti-chevron-down" id="sop-chev-${i}" style="color:var(--text-faint);transition:transform .2s"></i>
       </div>
-      <div class="sop-body" id="sop-body-${i}">
-        <ul class="sop-tasks">${s.tasks.map(t=>`<li><i class="ti ti-point"></i>${t}</li>`).join('')}</ul>
+      <div class="sop-body">
+        <ul class="sop-tasks">${s.tasks.map(t=>`<li><i class="ti ti-circle-check"></i>${t}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('');
+
+  // 模板
+  const platforms=[...new Set(TEMPLATES.map(t=>t.platform))];
+  document.getElementById('tmpl-grid').innerHTML=platforms.map(pl=>`
+    <div>
+      <div style="font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">${pl}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${TEMPLATES.filter(t=>t.platform===pl).map(t=>`
+          <div class="tmpl-card">
+            <div class="tmpl-label"><i class="ti ti-message"></i>${t.type}</div>
+            <div class="tmpl-text">${t.text}</div>
+            <button class="btn sm tmpl-copy" onclick="copyText(this,'${encodeURIComponent(t.text)}')"><i class="ti ti-copy"></i> 複製</button>
+          </div>`).join('')}
       </div>
     </div>`).join('');
 }
-function toggleSOP(i){
-  const b=document.getElementById('sop-body-'+i);
-  const c=document.getElementById('sop-chev-'+i);
-  b.classList.toggle('open');
-  c.style.transform=b.classList.contains('open')?'rotate(180deg)':'';
+
+function copyText(btn,encoded){
+  navigator.clipboard.writeText(decodeURIComponent(encoded)).then(()=>{
+    btn.innerHTML='<i class="ti ti-check"></i> 已複製';
+    setTimeout(()=>btn.innerHTML='<i class="ti ti-copy"></i> 複製',2000);
+  });
 }
 
-// ── STATS（從看板資料算）────────────────────────────────────
+// ── DB ────────────────────────────────────────────────────
+function renderDB(){
+  document.getElementById('db-grid').innerHTML=
+    dbItems.map(d=>`
+      <a class="db-card" href="${d.url}" target="_blank" ondblclick="event.preventDefault();openEditDb('${d.id}')">
+        <div class="db-icon">${d.icon||'🔗'}</div>
+        <div>
+          <div class="db-name">${d.name}</div>
+          <div class="db-url">${d.note||''}</div>
+        </div>
+      </a>`).join('')
+    +`<button class="db-add" onclick="openAddDb()"><i class="ti ti-plus"></i> 新增連結</button>`;
+}
+function openAddDb(){editDbId=null;['db-id','db-name','db-url','db-icon','db-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('db-del').style.display='none';document.getElementById('modal-db').classList.add('open')}
+function openEditDb(id){const d=dbItems.find(x=>x.id===id);if(!d)return;editDbId=id;document.getElementById('db-id').value=d.id;document.getElementById('db-name').value=d.name||'';document.getElementById('db-url').value=d.url||'';document.getElementById('db-icon').value=d.icon||'';document.getElementById('db-note').value=d.note||'';document.getElementById('db-del').style.display='inline-flex';document.getElementById('modal-db').classList.add('open')}
+function saveDb(){const name=document.getElementById('db-name').value.trim();const url=document.getElementById('db-url').value.trim();if(!name||!url){alert('請填入名稱和網址');return;}const data={id:editDbId||(Date.now().toString(36)),name,url,icon:document.getElementById('db-icon').value||'🔗',note:document.getElementById('db-note').value};if(editDbId)dbItems=dbItems.map(d=>d.id===editDbId?data:d);else dbItems.push(data);localStorage.setItem('yurroom_db',JSON.stringify(dbItems));closeModal('modal-db');renderDB()}
+function deleteDb(){if(!editDbId||!confirm('確定刪除？'))return;dbItems=dbItems.filter(d=>d.id!==editDbId);localStorage.setItem('yurroom_db',JSON.stringify(dbItems));closeModal('modal-db');renderDB()}
+
+// ── FINANCE ───────────────────────────────────────────────
 function renderStats(){
   const active=projects.filter(p=>p.stage<7).length;
   const total=projects.reduce((s,p)=>s+(Number(p.amount)||0),0);
@@ -581,156 +691,99 @@ function renderStats(){
   document.getElementById('stats').innerHTML=`
     <div class="stat-card"><div class="stat-label">進行中案件</div><div class="stat-value green">${active}</div></div>
     <div class="stat-card"><div class="stat-label">看板總金額</div><div class="stat-value">$${total.toLocaleString()}</div></div>
-    <div class="stat-card"><div class="stat-label">已結案</div><div class="stat-value">${done}</div></div>
-  `;
+    <div class="stat-card"><div class="stat-label">已結案</div><div class="stat-value">${done}</div></div>`;
 }
 
-// ── FINANCE：從 Google Sheets 讀取 ────────────────────────
 function loadFinance(){
-  if(!accessToken){ alert('請先登入'); return; }
-  const base = 'https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID;
-
-  // 讀年度總覽 + 收款紀錄
+  if(!accessToken){alert('請先登入');return;}
+  const base=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values`;
   Promise.all([
-    fetch(`${base}/values/年度總覽!B4:D20`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
-    fetch(`${base}/values/收款紀錄!A3:I200`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
-  ]).then(([summary, payments])=>{
+    fetch(`${base}/年度總覽!B4:D20`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+    fetch(`${base}/收款紀錄!A3:I200`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+    fetch(`${base}/年度總覽!B12:D17`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+    fetch(`${base}/年度總覽!B22:D33`,{headers:{Authorization:'Bearer '+accessToken}}).then(r=>r.json()),
+  ]).then(([summary,payments,cats,months])=>{
     renderFinanceSummary(summary.values||[]);
-    renderPaymentList(payments.values||[]);
-  }).catch(e=>{ console.error(e); alert('讀取失敗，請確認 Sheets API 已授權'); });
+    renderCats(cats.values||[]);
+    renderMonths(months.values||[]);
+    renderPayments(payments.values||[]);
+  }).catch(e=>{console.error(e);alert('讀取失敗，請確認 Sheets API 已授權');});
 }
 
 function renderFinanceSummary(rows){
-  // rows 來自 年度總覽 B4:D20
-  // 找關鍵字列
-  let totalIncome=0, collected=0, pending=0, projectCount=0;
-  let catData=[], monthData=[];
-
+  let ti=0,co=0,pe=0;
   rows.forEach(r=>{
-    const label=String(r[0]||'').trim();
-    const val=parseFloat(String(r[1]||'').replace(/[^0-9.-]/g,''))||0;
-    if(label.includes('今年總接案')) totalIncome=val;
-    if(label.includes('已收款合計')) collected=val;
-    if(label.includes('待收款合計')) pending=val;
-    if(label.includes('進行中')) projectCount=val;
+    const l=String(r[0]||'').trim();
+    const v=parseFloat(String(r[1]||'').replace(/[^0-9.-]/g,''))||0;
+    if(l.includes('今年總接案')) ti=v;
+    if(l.includes('已收款合計')) co=v;
+    if(l.includes('待收款')) pe=v;
   });
-
   document.getElementById('stats').innerHTML=`
-    <div class="stat-card"><div class="stat-label">今年總接案金額</div><div class="stat-value green">$${totalIncome.toLocaleString()}</div></div>
-    <div class="stat-card"><div class="stat-label">已收款</div><div class="stat-value">$${collected.toLocaleString()}</div></div>
-    <div class="stat-card"><div class="stat-label">待收款</div><div class="stat-value" style="color:var(--amber-text)">$${pending.toLocaleString()}</div></div>
-  `;
-
-  // 服務分類：從 Sheets 讀來的原始資料重新組
-  fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/年度總覽!B12:D18',
-    {headers:{Authorization:'Bearer '+accessToken}})
-  .then(r=>r.json()).then(d=>{
-    const rows2=d.values||[];
-    const catHTML = rows2.filter(r=>r[0]&&r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
-      const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
-      const pct=r[2]||'';
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px">
-        <span>${r[0]}</span>
-        <span style="display:flex;gap:12px">
-          <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${pct}</span>
-          <span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span>
-        </span>
-      </div>`;
-    }).join('');
-    document.getElementById('cat-breakdown').innerHTML = catHTML||'<div style="font-size:12px;color:var(--text-faint);padding:8px 0">尚無資料</div>';
-  });
-
-  // 月份分析
-  fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/年度總覽!B22:D33',
-    {headers:{Authorization:'Bearer '+accessToken}})
-  .then(r=>r.json()).then(d=>{
-    const rows3=d.values||[];
-    const monthHTML = rows3.filter(r=>r[0]&&r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
-      const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px">
-        <span>${r[0]}</span>
-        <span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span>
-      </div>`;
-    }).join('');
-    document.getElementById('monthly-breakdown').innerHTML = monthHTML||'<div style="font-size:12px;color:var(--text-faint);padding:8px 0">尚無已收款紀錄</div>';
-  });
+    <div class="stat-card"><div class="stat-label">今年總接案金額</div><div class="stat-value green">$${ti.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">已收款</div><div class="stat-value">$${co.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">待收款</div><div class="stat-value" style="color:var(--amber-t)">$${pe.toLocaleString()}</div></div>`;
 }
 
-function renderPaymentList(rows){
-  // 跳過空列，顯示有客戶或有金額的列
-  const STATUS_STYLE = {
-    '✦ 已付款 ✦': 'background:#F7EED5;color:#8B6914',
-    '✳ 待付款 ✳': 'background:#F4F4F4;color:#666660',
-  };
-  let currentClient='', currentProject='';
-  const html = rows.filter(r=>r.some(c=>c&&String(c).trim())).map(r=>{
-    const client  = String(r[0]||'').trim();
-    const project = String(r[1]||'').trim();
-    const cat     = String(r[2]||'').trim();
-    const total   = String(r[3]||'').trim();
-    const amount  = String(r[4]||'').trim();
-    const period  = String(r[5]||'').trim();
-    const date    = String(r[6]||'').trim();
-    const status  = String(r[7]||'').trim();
-    const note    = String(r[8]||'').trim();
+function renderCats(rows){
+  const html=rows.filter(r=>r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
+    const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
+    return `<div class="fin-row"><span>${r[0]}</span><span style="display:flex;gap:16px;align-items:center"><span style="font-size:12px;color:var(--muted)">${r[2]||''}</span><span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span></span></div>`;
+  }).join('');
+  document.getElementById('cat-breakdown').innerHTML=html||`<div class="fin-row" style="color:var(--faint)">尚無資料</div>`;
+}
 
-    if(client) currentClient=client;
-    if(project) currentProject=project;
+function renderMonths(rows){
+  const html=rows.filter(r=>r[1]&&parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))>0).map(r=>{
+    const amt=parseFloat(String(r[1]).replace(/[^0-9.-]/g,''))||0;
+    return `<div class="fin-row"><span>${r[0]}</span><span style="font-family:var(--mono);font-weight:500">$${amt.toLocaleString()}</span></div>`;
+  }).join('');
+  document.getElementById('monthly-breakdown').innerHTML=html||`<div class="fin-row" style="color:var(--faint)">尚無已付款紀錄</div>`;
+}
 
-    const statusStyle = STATUS_STYLE[status]||'background:#eee;color:#888';
-    if(!amount && !period && !status) return '';
-
-    return `<div style="display:grid;grid-template-columns:auto 1fr auto auto auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:0.5px solid var(--border);font-size:12px">
-      <div>
-        <div style="font-weight:500;font-size:13px">${client||''}</div>
-        <div style="color:var(--text-muted)">${project||''}</div>
+function renderPayments(rows){
+  if(!rows.length){document.getElementById('payment-list').innerHTML=`<div style="padding:1rem;font-size:13px;color:var(--faint);text-align:center">尚無收款紀錄</div>`;return;}
+  const STATUS_STYLE={'✦ 已付款 ✦':'background:#F7EED5;color:#8B6914','✳ 待付款 ✳':'background:#F4F4F4;color:#666660'};
+  let curClient='',curProject='';
+  const rowsHTML=rows.filter(r=>r.some(c=>c&&String(c).trim())).map(r=>{
+    const client=String(r[0]||'').trim();
+    const project=String(r[1]||'').trim();
+    const amount=String(r[4]||'').trim();
+    const period=String(r[5]||'').trim();
+    const date=String(r[6]||'').trim();
+    const status=String(r[7]||'').trim();
+    if(client) curClient=client;
+    if(project) curProject=project;
+    if(!amount&&!period) return '';
+    const ss=STATUS_STYLE[status]||'background:#eee;color:#888';
+    return `<div class="pay-row">
+      <div class="pay-cell" style="flex-direction:column;align-items:flex-start;gap:1px">
+        ${client?`<div style="font-weight:500;font-size:13px">${client}</div>`:'<div style="font-size:13px;color:var(--faint)"> </div>'}
+        ${project?`<div style="font-size:11px;color:var(--muted)">${project}</div>`:''}
       </div>
-      <div style="color:var(--text-muted)">${period}</div>
-      <div style="font-family:var(--mono);font-weight:500">${amount}</div>
-      <div style="font-size:11px;color:var(--text-faint)">${date}</div>
-      <div style="padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500;${statusStyle}">${status}</div>
+      <div class="pay-cell" style="color:var(--muted)">${period}</div>
+      <div class="pay-cell right" style="font-weight:500">${amount}</div>
+      <div class="pay-cell center" style="font-size:11px;color:var(--faint)">${date}</div>
+      <div class="pay-cell center"><span class="status-pill" style="${ss}">${status}</span></div>
     </div>`;
   }).join('');
 
-  document.getElementById('payment-list').innerHTML = `
-    <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
-      ${html||'<div style="padding:1rem;font-size:13px;color:var(--text-faint);text-align:center">尚無收款紀錄</div>'}
-    </div>`;
-}
-
-// ── 日曆：不需要填日期，移到階段就建立 ──────────────────
-function addToCalendar(p, type){
-  if(!accessToken) return;
-  const today = new Date().toISOString().split('T')[0];
-  const labels = {deposit:'訂金到帳',proposal:'提案',delivery:'完稿交件'};
-  const dates  = {deposit:p.depositDate||today, proposal:p.proposal||today, delivery:p.deadline||today};
-  const colors = {deposit:'5', proposal:'7', delivery:'2'};
-
-  const event = {
-    summary: `[Yu(r) Room] ${p.client} — ${labels[type]}`,
-    description: `案件：${p.project}\n服務：${CAT_MAP[p.cat]||''}\n${p.note||''}`,
-    start: { date: dates[type] },
-    end:   { date: dates[type] },
-    colorId: colors[type],
-  };
-
-  fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
-    method:'POST',
-    headers:{ Authorization:'Bearer '+accessToken, 'Content-Type':'application/json' },
-    body: JSON.stringify(event),
-  }).then(r=>r.json()).then(ev=>{
-    if(ev.id){ console.log('日曆事件已建立：',ev.summary); }
-    else { console.log('日曆回應：',ev); }
-  });
+  document.getElementById('payment-list').innerHTML=`
+    <div class="pay-row header">
+      <div class="pay-cell">客戶 / 案件</div>
+      <div class="pay-cell">期別</div>
+      <div class="pay-cell right">金額</div>
+      <div class="pay-cell center">日期</div>
+      <div class="pay-cell center">狀態</div>
+    </div>${rowsHTML}`;
 }
 
 // ── UTILS ─────────────────────────────────────────────────
-function save(){ localStorage.setItem('yurroom_projects',JSON.stringify(projects)); }
+function save(){localStorage.setItem('yurroom_projects',JSON.stringify(projects))}
 
-// ── INIT ──────────────────────────────────────────────────
 window.addEventListener('load',()=>{
-  const savedToken = localStorage.getItem('yurroom_token');
-  if(savedToken){ accessToken=savedToken; fetchUserInfo(); }
+  const t=localStorage.getItem('yurroom_token');
+  if(t){accessToken=t;fetchUserInfo();}
 });
 </script>
 <script src="https://accounts.google.com/gsi/client" onload="loadGIS()" async defer></script>
