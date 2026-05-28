@@ -1,11 +1,579 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>Yu(r) Room Studio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yu(r) Room Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #F7F5F2;
+  --surface: #FFFFFF;
+  --border: #E8E4DF;
+  --border-strong: #C8C4BF;
+  --text: #1A1A1A;
+  --text-muted: #888880;
+  --text-faint: #B8B4AF;
+  --accent: #0F6E56;
+  --accent-light: #E1F5EE;
+  --accent-dark: #085041;
+  --amber: #F7EED5;
+  --amber-text: #8B6914;
+  --gray-pill: #F4F4F4;
+  --gray-text: #666660;
+  --danger: #E24B4A;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+/* ── AUTH SCREEN ── */
+#auth-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; flex-direction: column; gap: 1.5rem; padding: 2rem;
+}
+.auth-card {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--radius); padding: 2.5rem; text-align: center;
+  max-width: 360px; width: 100%;
+}
+.auth-logo { font-size: 22px; font-weight: 300; letter-spacing: .08em; margin-bottom: .5rem; }
+.auth-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 2rem; letter-spacing: .06em; }
+.auth-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 11px 20px; background: var(--text); color: white;
+  border: none; border-radius: var(--radius-sm); font-family: var(--font);
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity .15s;
+}
+.auth-btn:hover { opacity: .85; }
+.auth-btn img { width: 18px; height: 18px; }
+
+/* ── APP LAYOUT ── */
+#app { display: none; min-height: 100vh; }
+.sidebar {
+  width: 220px; height: 100vh; position: fixed; left: 0; top: 0;
+  background: var(--surface); border-right: 0.5px solid var(--border);
+  display: flex; flex-direction: column; padding: 1.25rem 0; z-index: 50;
+}
+.sidebar-logo { padding: 0 1.25rem 1.25rem; border-bottom: 0.5px solid var(--border); }
+.sidebar-logo-text { font-size: 15px; font-weight: 400; letter-spacing: .06em; }
+.sidebar-logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.nav { flex: 1; padding: 1rem 0; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 8px 1.25rem;
+  font-size: 13px; color: var(--text-muted); cursor: pointer;
+  border-left: 2px solid transparent; transition: all .12s;
+}
+.nav-item:hover { color: var(--text); background: var(--bg); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+.nav-item i { font-size: 16px; }
+.sidebar-user { padding: 1rem 1.25rem; border-top: 0.5px solid var(--border); }
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--accent-dark); overflow: hidden; }
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-name { font-size: 12px; font-weight: 500; }
+.user-email { font-size: 11px; color: var(--text-muted); }
+.logout-btn { margin-top: 8px; background: none; border: none; font-family: var(--font); font-size: 11px; color: var(--text-faint); cursor: pointer; padding: 0; }
+.logout-btn:hover { color: var(--danger); }
+
+.main { margin-left: 220px; padding: 1.5rem 2rem; min-height: 100vh; }
+.page { display: none; }
+.page.active { display: block; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+.page-title { font-size: 18px; font-weight: 500; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--radius-sm); font-family: var(--font);
+  font-size: 13px; cursor: pointer; border: 0.5px solid var(--border-strong);
+  background: none; color: var(--text-muted); transition: all .12s;
+}
+.btn:hover { background: var(--bg); color: var(--text); }
+.btn.primary { background: var(--text); color: white; border-color: transparent; }
+.btn.primary:hover { opacity: .85; }
+.btn.sm { padding: 4px 9px; font-size: 11px; }
+.btn.danger { color: var(--danger); border-color: var(--danger); }
+.btn.danger:hover { background: #fff0f0; }
+
+/* ── BOARD ── */
+.board-wrap { overflow-x: auto; padding-bottom: 1rem; }
+.board { display: flex; gap: 12px; min-width: max-content; }
+.col {
+  width: 175px; flex-shrink: 0; background: var(--surface);
+  border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px;
+  min-height: 300px;
+}
+.col.drag-over { border-color: var(--accent); background: var(--accent-light); }
+.col-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.col-title { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.col-count { font-size: 10px; background: var(--bg); border: 0.5px solid var(--border); border-radius: 10px; padding: 1px 6px; color: var(--text-faint); }
+
+.card {
+  background: var(--bg); border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 9px; margin-bottom: 7px;
+  cursor: grab; transition: border-color .12s;
+}
+.card:hover { border-color: var(--border-strong); }
+.card:active { cursor: grabbing; opacity: .5; }
+.card-client { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+.card-project { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; line-height: 1.4; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.cat-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; white-space: nowrap; }
+.cat-brand   { background: #E1F5EE; color: #085041; }
+.cat-pack    { background: #FAECE7; color: #712B13; }
+.cat-graphic { background: #E6F1FB; color: #0C447C; }
+.cat-social  { background: #FBEAF0; color: #72243E; }
+.cat-digital { background: #FAEEDA; color: #633806; }
+.cat-other   { background: #F1EFE8; color: #444441; }
+.card-amount { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
+.card-btns { display: flex; gap: 3px; margin-top: 7px; border-top: 0.5px solid var(--border); padding-top: 7px; }
+.card-date { font-size: 10px; color: var(--text-faint); margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+.col-empty { text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-faint); }
+
+/* ── SOP ── */
+.sop-list { display: flex; flex-direction: column; gap: 8px; max-width: 680px; }
+.sop-item { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.sop-head {
+  display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+  background: var(--surface); cursor: pointer; user-select: none;
+}
+.sop-num {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--text);
+  color: white; font-size: 11px; font-weight: 500; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sop-stage-name { font-size: 13px; font-weight: 500; flex: 1; }
+.sop-body { display: none; padding: 10px 14px; border-top: 0.5px solid var(--border); background: var(--bg); }
+.sop-body.open { display: block; }
+.sop-tasks { list-style: none; }
+.sop-tasks li { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.sop-tasks li:last-child { border-bottom: none; }
+.sop-tasks li i { color: var(--text-faint); flex-shrink: 0; margin-top: 1px; }
+
+/* ── MODAL ── */
+.modal-bg {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  z-index: 200; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 1.5rem; width: min(480px, 100%); max-height: 90vh;
+  overflow-y: auto; border: 0.5px solid var(--border);
+}
+.modal-title { font-size: 15px; font-weight: 500; margin-bottom: 1.25rem; }
+.field { margin-bottom: .875rem; }
+.field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; letter-spacing: .04em; }
+.field input, .field select, .field textarea {
+  width: 100%; font-family: var(--font); font-size: 13px;
+  border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm);
+  padding: 8px 10px; background: var(--surface); color: var(--text);
+}
+.field textarea { resize: vertical; min-height: 70px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; border-top: 0.5px solid var(--border); padding-top: 1rem; }
+
+/* ── STATS ── */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+.stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 500; font-family: var(--mono); }
+.stat-value.green { color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { width: 100%; height: auto; position: fixed; bottom: 0; top: auto; flex-direction: row; padding: 0; border-right: none; border-top: 0.5px solid var(--border); z-index: 100; }
+  .sidebar-logo, .sidebar-user { display: none; }
+  .nav { display: flex; padding: 0; overflow-x: auto; }
+  .nav-item { flex-direction: column; gap: 2px; padding: 10px 12px; font-size: 9px; border-left: none; border-top: 2px solid transparent; white-space: nowrap; }
+  .nav-item.active { border-left: none; border-top-color: var(--accent); }
+  .main { margin-left: 0; margin-bottom: 60px; padding: 1rem; }
+  .board { gap: 8px; }
+  .col { width: 155px; }
+}
+</style>
 </head>
 <body>
-  <h1>Yu(r) Room Studio</h1>
-  <p>即將上線 🌿</p>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Yu(r) Room</div>
+    <div class="auth-sub">DESIGN STUDIO</div>
+    <button class="auth-btn" onclick="signIn()">
+      <img src="https://www.google.com/favicon.ico" alt="Google">
+      使用 Google 帳號登入
+    </button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">Yu(r) Room</div>
+      <div class="sidebar-logo-sub">Studio Dashboard</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('board',this)"><i class="ti ti-layout-kanban"></i>看板</div>
+      <div class="nav-item" onclick="showPage('sop',this)"><i class="ti ti-checklist"></i>接案 SOP</div>
+      <div class="nav-item" onclick="showPage('finance',this)"><i class="ti ti-chart-pie"></i>財務總覽</div>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar"></div>
+        <div>
+          <div class="user-name" id="user-name">—</div>
+          <div class="user-email" id="user-email">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="signOut()">登出</button>
+    </div>
+  </div>
+
+  <main class="main">
+    <!-- 看板 -->
+    <div class="page active" id="page-board">
+      <div class="page-header">
+        <div class="page-title">專案看板</div>
+        <button class="btn primary" onclick="openNew()"><i class="ti ti-plus"></i> 新增案件</button>
+      </div>
+      <div class="board-wrap"><div class="board" id="board"></div></div>
+    </div>
+
+    <!-- SOP -->
+    <div class="page" id="page-sop">
+      <div class="page-header"><div class="page-title">接案 SOP</div></div>
+      <div class="sop-list" id="sop-list"></div>
+    </div>
+
+    <!-- 財務 -->
+    <div class="page" id="page-finance">
+      <div class="page-header"><div class="page-title">財務總覽</div></div>
+      <div class="stats" id="stats"></div>
+      <p style="font-size:12px;color:var(--text-muted)">詳細收支紀錄請前往 <a href="https://docs.google.com/spreadsheets" target="_blank" style="color:var(--accent)">Google Sheets</a> 查看。</p>
+    </div>
+  </main>
+</div>
+
+<!-- 新增/編輯 Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">新增案件</div>
+    <input type="hidden" id="f-id">
+    <div class="field-row">
+      <div class="field"><label>客戶名稱 *</label><input id="f-client" placeholder="瑿働身體顧問有限公司"></div>
+      <div class="field"><label>聯絡方式</label><input id="f-contact" placeholder="Line / Email"></div>
+    </div>
+    <div class="field"><label>案件名稱 *</label><input id="f-project" placeholder="視覺識別系統設計"></div>
+    <div class="field-row">
+      <div class="field"><label>服務類別</label>
+        <select id="f-cat">
+          <option value="brand">品牌識別 Branding</option>
+          <option value="pack">包裝設計 Packaging</option>
+          <option value="graphic">視覺與平面 Graphic</option>
+          <option value="social">社群視覺 Social</option>
+          <option value="digital">數位與動態 Digital</option>
+          <option value="other">其他 Other</option>
+        </select>
+      </div>
+      <div class="field"><label>專案總金額</label><input id="f-amount" type="number" placeholder="55000"></div>
+    </div>
+    <div class="field"><label>目前階段</label>
+      <select id="f-stage">
+        <option value="0">詢問中</option><option value="1">報價寄出</option>
+        <option value="2">訂金到帳</option><option value="3">設計中</option>
+        <option value="4">提案</option><option value="5">修改中</option>
+        <option value="6">完稿</option><option value="7">結案</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>期望完成日</label><input id="f-deadline" type="date"></div>
+      <div class="field"><label>第一次提案日</label><input id="f-proposal" type="date"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>訂金收款日</label><input id="f-deposit-date" type="date"></div>
+      <div class="field"><label>交稿日</label><input id="f-delivery" type="date"></div>
+    </div>
+    <div class="field"><label>備註</label><textarea id="f-note" placeholder="特殊需求、客戶聯絡說明..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn danger" id="btn-del" style="display:none" onclick="deleteCard()">刪除</button>
+      <button class="btn primary" onclick="saveCard()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+const CLIENT_ID = '285105995019-oaipob21hn261fno7ks1tbtv3d5tmi2u.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar.events profile email';
+
+const STAGES = ['詢問中','報價寄出','訂金到帳','設計中','提案','修改中','完稿','結案'];
+const CAT_MAP = {brand:'品牌識別',pack:'包裝設計',graphic:'視覺與平面',social:'社群視覺',digital:'數位與動態',other:'其他'};
+const CAT_CLASS = {brand:'cat-brand',pack:'cat-pack',graphic:'cat-graphic',social:'cat-social',digital:'cat-digital',other:'cat-other'};
+
+const SOP = [
+  {stage:'詢問中',tasks:['回覆詢價訊息（24hr 內）','了解需求：品牌現況、項目、預算、時程','確認是否在服務範圍內','評估是否接案']},
+  {stage:'報價寄出',tasks:['依需求填寫報價單（Google Sheets）','產生 PDF 並寄出','說明修改次數、付款方式','告知報價效期 30 天','追蹤：若 3 天無回音，發一次詢問訊息']},
+  {stage:'訂金到帳',tasks:['確認匯款金額正確（總價 50%）','開立收據並寄出','將案件記入收支表（第一期款）','確認交件時程，告知客戶預計提案日','建立案件資料夾（依歸檔架構）']},
+  {stage:'設計中',tasks:['蒐集品牌相關資料、競品參考','確認設計方向（mood board）','執行設計，整理 WIP 版本','定期回顧是否符合客戶需求方向']},
+  {stage:'提案',tasks:['準備 3 款初稿提案','製作提案簡報 / PDF','與客戶說明設計思考脈絡','記錄客戶回饋，確認選定方向']},
+  {stage:'修改中',tasks:['確認修改需求（文字記錄）','追蹤修改次數（超出告知加收費用）','大幅修改需重新報價','每次修改後請客戶書面確認']},
+  {stage:'完稿',tasks:['整理交付檔案（AI / PDF / JPG）','確認所有交付項目符合合約','發送尾款請款通知','寄出完稿檔與收據（尾款到帳後）','將尾款記入收支表（第二期款）']},
+  {stage:'結案',tasks:['確認客戶滿意度','詢問是否可作為作品集展示','歸檔所有文件','檢討時間與定價是否合理']},
+];
+
+// ── STATE ────────────────────────────────────────────────
+let tokenClient, accessToken, userInfo;
+let projects = JSON.parse(localStorage.getItem('yurroom_projects')||'[]');
+let editId = null, dragId = null;
+
+// ── AUTH ─────────────────────────────────────────────────
+function loadGIS(){
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if(resp.error) return;
+      accessToken = resp.access_token;
+      localStorage.setItem('yurroom_token', accessToken);
+      fetchUserInfo();
+    }
+  });
+}
+
+function signIn(){
+  if(typeof google === 'undefined'){ alert('Google API 載入中，請稍後再試'); return; }
+  tokenClient.requestAccessToken({prompt:'consent'});
+}
+
+function signOut(){
+  google.accounts.oauth2.revoke(accessToken, ()=>{});
+  accessToken = null;
+  localStorage.removeItem('yurroom_token');
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+function fetchUserInfo(){
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo',{
+    headers:{Authorization:'Bearer '+accessToken}
+  }).then(r=>r.json()).then(u=>{
+    userInfo = u;
+    const av = document.getElementById('user-avatar');
+    if(u.picture){ av.innerHTML=`<img src="${u.picture}" alt="">`; }
+    else { av.textContent = (u.name||'U')[0].toUpperCase(); }
+    document.getElementById('user-name').textContent = u.name||'';
+    document.getElementById('user-email').textContent = u.email||'';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderBoard(); renderSOP(); renderStats();
+  });
+}
+
+// ── NAV ──────────────────────────────────────────────────
+function showPage(name, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── BOARD ─────────────────────────────────────────────────
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML = STAGES.map((s,i)=>{
+    const cards = projects.filter(p=>p.stage===i);
+    return `<div class="col" data-stage="${i}">
+      <div class="col-head">
+        <span class="col-title">${s}</span>
+        <span class="col-count">${cards.length}</span>
+      </div>
+      ${cards.length===0?`<div class="col-empty">—</div>`:''}
+      ${cards.map(p=>`
+        <div class="card" draggable="true" id="card-${p.id}"
+          ondragstart="dragStart(event,'${p.id}')" ondragend="dragEnd()">
+          <div class="card-client">${p.client}</div>
+          <div class="card-project">${p.project}</div>
+          <div class="card-footer">
+            <span class="cat-pill ${CAT_CLASS[p.cat]||'cat-other'}">${CAT_MAP[p.cat]||'其他'}</span>
+            <span class="card-amount">${p.amount?'$'+Number(p.amount).toLocaleString():''}</span>
+          </div>
+          ${p.proposal?`<div class="card-date"><i class="ti ti-presentation" style="font-size:11px"></i>提案 ${p.proposal}</div>`:''}
+          ${p.deadline?`<div class="card-date"><i class="ti ti-calendar" style="font-size:11px"></i>交件 ${p.deadline}</div>`:''}
+          <div class="card-btns">
+            <button class="btn sm" onclick="openEdit('${p.id}')"><i class="ti ti-edit"></i></button>
+            <button class="btn sm" onclick="move('${p.id}',-1)" title="上一階段"><i class="ti ti-arrow-left"></i></button>
+            <button class="btn sm" onclick="move('${p.id}',1)" title="下一階段"><i class="ti ti-arrow-right"></i></button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.col').forEach(col=>{
+    const si = parseInt(col.dataset.stage);
+    col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over')});
+    col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
+    col.addEventListener('drop',e=>{ e.preventDefault(); col.classList.remove('drag-over'); dropCard(si); });
+  });
+}
+
+function dragStart(e,id){ dragId=id; setTimeout(()=>document.getElementById('card-'+id)?.classList.add('dragging'),0); }
+function dragEnd(){ dragId=null; document.querySelectorAll('.card').forEach(c=>c.classList.remove('dragging')); }
+function dropCard(si){ if(!dragId) return; const p=projects.find(x=>x.id===dragId); if(!p) return; const old=p.stage; p.stage=si; save(); renderBoard(); renderStats(); handleStageChange(p,old,si); }
+
+function move(id,dir){
+  const p=projects.find(x=>x.id===id); if(!p) return;
+  const old=p.stage; p.stage=Math.max(0,Math.min(7,p.stage+dir));
+  save(); renderBoard(); renderStats(); handleStageChange(p,old,p.stage);
+}
+
+// ── STAGE CHANGE HOOKS ────────────────────────────────────
+function handleStageChange(p, oldStage, newStage){
+  if(oldStage!==2 && newStage===2){ addToCalendar(p,'deposit'); }
+  if(oldStage!==4 && newStage===4){ addToCalendar(p,'proposal'); }
+  if(oldStage!==6 && newStage===6){ addToCalendar(p,'delivery'); }
+}
+
+// ── GOOGLE CALENDAR ───────────────────────────────────────
+function addToCalendar(p, type){
+  if(!accessToken) return;
+  const labels = {deposit:'訂金到帳',proposal:'提案',delivery:'完稿交件'};
+  const dates  = {deposit:p.depositDate, proposal:p.proposal, delivery:p.deadline};
+  const dateStr = dates[type];
+  if(!dateStr) return;
+
+  const event = {
+    summary: `[Yu(r) Room] ${p.client} — ${labels[type]}`,
+    description: `案件：${p.project}\n服務：${CAT_MAP[p.cat]||''}\n${p.note||''}`,
+    start: { date: dateStr },
+    end:   { date: dateStr },
+    colorId: type==='deposit' ? '5' : type==='proposal' ? '7' : '2',
+  };
+
+  fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+    method:'POST',
+    headers:{ Authorization:'Bearer '+accessToken, 'Content-Type':'application/json' },
+    body: JSON.stringify(event),
+  }).then(r=>r.json()).then(ev=>{
+    if(ev.id) console.log('日曆事件已建立：',ev.summary);
+  }).catch(e=>console.log('日曆錯誤：',e));
+}
+
+// ── MODAL ─────────────────────────────────────────────────
+function openNew(){
+  editId=null;
+  document.getElementById('modal-title').textContent='新增案件';
+  document.getElementById('btn-del').style.display='none';
+  ['f-id','f-client','f-contact','f-project','f-amount','f-deadline','f-proposal','f-deposit-date','f-delivery','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-cat').value='brand';
+  document.getElementById('f-stage').value='0';
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEdit(id){
+  const p=projects.find(x=>x.id===id); if(!p) return;
+  editId=id;
+  document.getElementById('modal-title').textContent='編輯案件';
+  document.getElementById('btn-del').style.display='inline-flex';
+  document.getElementById('f-id').value=p.id;
+  document.getElementById('f-client').value=p.client||'';
+  document.getElementById('f-contact').value=p.contact||'';
+  document.getElementById('f-project').value=p.project||'';
+  document.getElementById('f-cat').value=p.cat||'brand';
+  document.getElementById('f-amount').value=p.amount||'';
+  document.getElementById('f-stage').value=String(p.stage||0);
+  document.getElementById('f-deadline').value=p.deadline||'';
+  document.getElementById('f-proposal').value=p.proposal||'';
+  document.getElementById('f-deposit-date').value=p.depositDate||'';
+  document.getElementById('f-delivery').value=p.delivery||'';
+  document.getElementById('f-note').value=p.note||'';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+
+function saveCard(){
+  const client=document.getElementById('f-client').value.trim();
+  const project=document.getElementById('f-project').value.trim();
+  if(!client||!project){ alert('請填入客戶名稱和案件名稱'); return; }
+  const newStage=parseInt(document.getElementById('f-stage').value);
+  const data={
+    id:editId||(Date.now().toString(36)+Math.random().toString(36).slice(2,5)),
+    client, project,
+    contact:document.getElementById('f-contact').value,
+    cat:document.getElementById('f-cat').value,
+    amount:document.getElementById('f-amount').value,
+    stage:newStage,
+    deadline:document.getElementById('f-deadline').value,
+    proposal:document.getElementById('f-proposal').value,
+    depositDate:document.getElementById('f-deposit-date').value,
+    delivery:document.getElementById('f-delivery').value,
+    note:document.getElementById('f-note').value,
+  };
+  const old = editId ? (projects.find(x=>x.id===editId)?.stage??-1) : -1;
+  if(editId){ projects=projects.map(p=>p.id===editId?data:p); }
+  else { projects.push(data); }
+  save(); closeModal(); renderBoard(); renderStats();
+  if(old!==newStage) handleStageChange(data,old,newStage);
+  else if(!editId && newStage===2) addToCalendar(data,'deposit');
+}
+
+function deleteCard(){
+  if(!editId||!confirm('確定刪除？')) return;
+  projects=projects.filter(p=>p.id!==editId);
+  save(); closeModal(); renderBoard(); renderStats();
+}
+
+// ── SOP ───────────────────────────────────────────────────
+function renderSOP(){
+  document.getElementById('sop-list').innerHTML = SOP.map((s,i)=>`
+    <div class="sop-item">
+      <div class="sop-head" onclick="toggleSOP(${i})">
+        <div class="sop-num">${i+1}</div>
+        <div class="sop-stage-name">${s.stage}</div>
+        <i class="ti ti-chevron-down" id="sop-chev-${i}" style="color:var(--text-faint);transition:transform .2s"></i>
+      </div>
+      <div class="sop-body" id="sop-body-${i}">
+        <ul class="sop-tasks">${s.tasks.map(t=>`<li><i class="ti ti-point"></i>${t}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('');
+}
+function toggleSOP(i){
+  const b=document.getElementById('sop-body-'+i);
+  const c=document.getElementById('sop-chev-'+i);
+  b.classList.toggle('open');
+  c.style.transform=b.classList.contains('open')?'rotate(180deg)':'';
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function renderStats(){
+  const active=projects.filter(p=>p.stage<7).length;
+  const total=projects.reduce((s,p)=>s+(Number(p.amount)||0),0);
+  const done=projects.filter(p=>p.stage===7).length;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">進行中案件</div><div class="stat-value green">${active}</div></div>
+    <div class="stat-card"><div class="stat-label">總接案金額</div><div class="stat-value">$${total.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">已結案</div><div class="stat-value">${done}</div></div>
+  `;
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function save(){ localStorage.setItem('yurroom_projects',JSON.stringify(projects)); }
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  const savedToken = localStorage.getItem('yurroom_token');
+  if(savedToken){ accessToken=savedToken; fetchUserInfo(); }
+});
+</script>
+<script src="https://accounts.google.com/gsi/client" onload="loadGIS()" async defer></script>
 </body>
 </html>
